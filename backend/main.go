@@ -173,11 +173,14 @@ func executeProfileHandler(c *gin.Context) {
 	log.Printf("Executing InSpec profile %s on %s as %s", req.Profile, req.Hostname, req.Username)
 	log.Printf("Private key saved to %s", privateKeyPath)
 
+	start := time.Now()
 	// Construct InSpec command
 	cmd := exec.Command("inspec", "exec", req.Profile, "-t", fmt.Sprintf("ssh://%s@%s", req.Username, req.Hostname), "-i", privateKeyPath, "--chef-license", "accept", "--chef-license-key", "free-833b40cf-336a-42ee-b71d-f14a078107b9-5090")
 
 	// Execute command and capture output
 	output, err := cmd.CombinedOutput()
+	log.Printf("InSpec command executed in %s", time.Since(start))
+
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Execution failed", "details": string(output)})
 		return
