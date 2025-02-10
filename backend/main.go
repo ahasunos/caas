@@ -2,10 +2,13 @@ package main
 
 import (
 	"database/sql"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"os/exec"
 	"strings"
 	"time"
 
@@ -136,6 +139,52 @@ func addProfileHandler(c *gin.Context) {
 			"error": "The provided repository is not a valid InSpec profile (missing inspec.yml).",
 		})
 	}
+}
+
+func executeProfileHandler(c *gin.Context) {
+	// Parse request body
+	var req struct {
+		Hostname   string `json:"hostname"`
+		Username   string `json:"username"`
+		Profile    string `json:"profile"`
+		PrivateKey string `json:"private_key"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	// Decode the Base64 encoded private key
+	decodedKey, err := base64.StdEncoding.DecodeString(req.PrivateKey)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode private key"})
+		return
+	}
+
+	// Save the decoded private key to a temporary file
+	privateKeyPath := "/tmp/temp-key.pem"
+	if err := os.WriteFile(privateKeyPath, decodedKey, 0600); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save private key"})
+		return
+	}
+	defer os.Remove(privateKeyPath) // Cleanup after execution
+
+	log.Printf("Executing InSpec profile %s on %s as %s", req.Profile, req.Hostname, req.Username)
+	log.Printf("Private key saved to %s", privateKeyPath)
+
+	// Construct InSpec command
+	cmd := exec.Command("inspec", "exec", req.Profile, "-t", fmt.Sprintf("ssh://%s@%s", req.Username, req.Hostname), "-i", privateKeyPath, "--chef-license", "accept", "--chef-license-key", "free-833b40cf-336a-42ee-b71d-f14a078107b9-5090")
+
+	// Execute command and capture output
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Execution failed", "details": string(output)})
+		return
+	}
+
+	// Return execution results
+	c.JSON(http.StatusOK, gin.H{"output": string(output)})
 }
 
 // Function to fetch profile details from GitHub
@@ -356,6 +405,7 @@ func main() {
 	r.GET("/fetch-profiles", fetchProfilesHandler)
 	r.GET("/update-profiles", updateProfilesHandler)
 	r.POST("/add-profile", addProfileHandler) // New endpoint to add profile
+	r.POST("/execute-profile", executeProfileHandler)
 
 	// Run the server
 	r.Run(":8080")
