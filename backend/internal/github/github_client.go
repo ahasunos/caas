@@ -84,7 +84,7 @@ func FetchProfilesFromGitHub() ([]models.Profile, error) {
 		// Loop through the items and add valid profiles that have inspec.yml
 		for _, repo := range result.Items {
 			// Check if inspec.yml exists in the repository's root
-			if repo.Description != "" && hasInSpecYML(repo.HTMLURL) {
+			if repo.Description != "" && HasInSpecYML(repo.HTMLURL) {
 				allProfiles = append(allProfiles, models.Profile{
 					Name:        repo.Name,
 					URL:         repo.HTMLURL,

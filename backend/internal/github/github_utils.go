@@ -9,7 +9,7 @@ import (
 
 // Function to check if the inspec.yml file exists in the repository's root
 // Function to check if the inspec.yml file exists in the repository's root
-func hasInSpecYML(repoURL string) bool {
+func HasInSpecYML(repoURL string) bool {
 	// Construct the API URL to get the contents of the repo
 
 	repoParts := strings.Split(repoURL, "/")
