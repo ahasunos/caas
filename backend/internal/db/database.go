@@ -9,7 +9,7 @@ import (
 // Database connection details
 var db *sql.DB
 
-func init() {
+func InitDB() error {
 	var err error
 	// db, err = sql.Open("postgres", "host=localhost port=5432 user=postgres password=password123 dbname=inspec sslmode=disable")
 	db, err = sql.Open("postgres", "host=inspec-postgres port=5432 user=postgres password=password123 dbname=inspec sslmode=disable")
@@ -35,4 +35,5 @@ func init() {
 	}
 
 	fmt.Println("Table 'inspec_profiles' ensured to exist.")
+	return db.Ping()
 }
