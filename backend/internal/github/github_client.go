@@ -11,7 +11,7 @@ import (
 )
 
 // Function to fetch profile details from GitHub
-func fetchProfileDetailsFromGitHub(repoURL string) (models.Profile, error) {
+func FetchProfileDetailsFromGitHub(repoURL string) (models.Profile, error) {
 	// Extract repository owner and name from URL
 	repoParts := strings.Split(repoURL, "/")
 	owner := repoParts[len(repoParts)-2]
@@ -51,7 +51,7 @@ func fetchProfileDetailsFromGitHub(repoURL string) (models.Profile, error) {
 }
 
 // Function to fetch profiles from GitHub API
-func fetchProfilesFromGitHub() ([]models.Profile, error) {
+func FetchProfilesFromGitHub() ([]models.Profile, error) {
 	var allProfiles []models.Profile
 	page := 1
 	perPage := 10
