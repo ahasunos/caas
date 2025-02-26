@@ -14,14 +14,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Endpoint: /
+// welcomeHandler godoc
+// @Summary Welcome message
+// @Description Returns a welcome message for InSpec as a Service
+// @Tags welcome
+// @Produce json
+// @Success 200 {object} map[string]interface{}
+// @Router / [get]
 func welcomeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Welcome to InSpec as a Service!",
 	})
 }
 
-// Endpoint: /fetch-profiles
+// fetchProfilesHandler handles the HTTP request to fetch profiles.
+// It first attempts to retrieve profiles from the database. If no profiles
+// are found, it updates the profiles from GitHub and retries fetching them
+// from the database. It returns the profiles in JSON format or an error
+// message if any operation fails.
+//
+// @Summary Fetch profiles
+// @Description Fetch profiles from the database or update from GitHub if not found
+// @Tags profiles
+// @Produce json
+// @Success 200 {array} models.Profile
+// @Failure 500 {object} map[string]interface{}
+// @Router /fetch-profiles [get]
 func fetchProfilesHandler(c *gin.Context) {
 	profiles, err := db.GetProfilesFromDatabase()
 	if err != nil {
@@ -46,7 +64,18 @@ func fetchProfilesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, profiles)
 }
 
-// Endpoint: /update-profiles
+// updateProfilesHandler handles the HTTP request to update profiles.
+// It responds with a JSON message indicating that the profile update is in progress.
+// The actual profile update process is initiated by calling db.UpdateProfilesFromGitHub().
+// If an error occurs during the update, it is logged.
+//
+// @Summary Update profiles
+// @Description Initiates the process of updating profiles from GitHub and responds with a status message.
+// @Tags profiles
+// @Produce json
+// @Success 200 {object} any
+// @Failure 500 {object} any
+// @Router /update-profiles [post]
 func updateProfilesHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Profile update in progress, please check back later.",
@@ -58,7 +87,17 @@ func updateProfilesHandler(c *gin.Context) {
 	}
 }
 
-// Endpoint: /add-profile
+// addProfileHandler handles the addition of a new InSpec profile from a GitHub repository URL.
+// @Summary Add a new InSpec profile
+// @Description Adds a new InSpec profile by fetching details from a provided GitHub repository URL.
+// @Tags profiles
+// @Accept json
+// @Produce json
+// @Param url body string true "GitHub repository URL"
+// @Success 200 {object} map[string]interface{} "Profile added successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request payload or missing inspec.yml"
+// @Failure 500 {object} map[string]interface{} "Failed to fetch profile details from GitHub or insert into the database"
+// @Router /add-profile [post]
 func addProfileHandler(c *gin.Context) {
 	var request struct {
 		URL string `json:"url"`
@@ -103,6 +142,16 @@ func addProfileHandler(c *gin.Context) {
 	}
 }
 
+// @Summary Execute InSpec profile
+// @Description Executes an InSpec profile on a remote host using SSH authentication.
+// @Tags profiles
+// @Accept json
+// @Produce json
+// @Param request body any{Hostname string `json:"hostname"`; Username string `json:"username"`; Profile string `json:"profile"`; PrivateKey string `json:"private_key"`} true "Execution request"
+// @Success 200 {object} map[string]interface{} "Execution results"
+// @Failure 400 {object} map[string]interface{} "Invalid request"
+// @Failure 500 {object} map[string]interface{} "Execution failed"
+// @Router /execute-profile [post]
 func executeProfileHandler(c *gin.Context) {
 	// Parse request body
 	var req struct {

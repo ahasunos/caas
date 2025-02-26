@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// Profile struct to hold profile data
+// Profile represents an InSpec profile.
 type Profile struct {
 	ID          int       `json:"id"`
 	Name        string    `json:"name"`
