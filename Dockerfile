@@ -18,7 +18,7 @@ COPY backend .
 RUN go build -o /app/main .
 
 # Use a lightweight Go runtime for the final container
-FROM golang:1.22
+FROM golang:1.23
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install -y \
 # Copy built Go binary and air from the builder stage
 COPY --from=builder /go/bin/air /usr/local/bin/air
 COPY --from=builder /app/main /app/main
+COPY --from=builder /app/docs /app/docs
 
 # Expose the application port
 EXPOSE 8080
