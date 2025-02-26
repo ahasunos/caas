@@ -1,0 +1,142 @@
+basePath: /
+definitions:
+  models.Profile:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      last_updated:
+        type: string
+      name:
+        type: string
+      stars:
+        type: integer
+      url:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: This is an API for InSpec Cloud.
+  title: InSpec Cloud API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Returns a welcome message for InSpec as a Service
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Welcome message
+      tags:
+      - welcome
+  /add-profile:
+    post:
+      consumes:
+      - application/json
+      description: Adds a new InSpec profile by fetching details from a provided GitHub
+        repository URL.
+      parameters:
+      - description: GitHub repository URL
+        in: body
+        name: url
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Profile added successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request payload or missing inspec.yml
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Failed to fetch profile details from GitHub or insert into
+            the database
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Add a new InSpec profile
+      tags:
+      - profiles
+  /execute-profile:
+    post:
+      consumes:
+      - application/json
+      description: Executes an InSpec profile on a remote host using SSH authentication.
+      parameters:
+      - description: Execution request
+        in: body
+        name: request
+        required: true
+        schema: {}
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Execution results
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Execution failed
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Execute InSpec profile
+      tags:
+      - profiles
+  /fetch-profiles:
+    get:
+      description: Fetch profiles from the database or update from GitHub if not found
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Profile'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Fetch profiles
+      tags:
+      - profiles
+  /update-profiles:
+    post:
+      description: Initiates the process of updating profiles from GitHub and responds
+        with a status message.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: Update profiles
+      tags:
+      - profiles
+swagger: "2.0"
