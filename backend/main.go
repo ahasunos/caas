@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ahasunos/inspec-cloud/backend/internal/api"
-	"github.com/ahasunos/inspec-cloud/backend/internal/db"
+	"github.com/ahasunos/caas/backend/internal/api"
+	"github.com/ahasunos/caas/backend/internal/db"
 
-	_ "github.com/ahasunos/inspec-cloud/backend/docs" // Import docs
+	_ "github.com/ahasunos/caas/backend/docs" // Import docs
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )

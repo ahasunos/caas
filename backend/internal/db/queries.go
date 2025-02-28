@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	"github.com/ahasunos/inspec-cloud/backend/internal/github"
-	"github.com/ahasunos/inspec-cloud/backend/internal/models"
+	"github.com/ahasunos/caas/backend/internal/github"
+	"github.com/ahasunos/caas/backend/internal/models"
 )
 
 // Function to insert profile into the database

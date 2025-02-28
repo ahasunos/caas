@@ -9,8 +9,8 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/ahasunos/inspec-cloud/backend/internal/db"
-	"github.com/ahasunos/inspec-cloud/backend/internal/github"
+	"github.com/ahasunos/caas/backend/internal/db"
+	"github.com/ahasunos/caas/backend/internal/github"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,7 +23,7 @@ import (
 // @Router / [get]
 func welcomeHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Welcome to InSpec as a Service!",
+		"message": "Welcome to Compliance as a Service!",
 	})
 }
 

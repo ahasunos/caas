@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ahasunos/inspec-cloud/backend/internal/models"
+	"github.com/ahasunos/caas/backend/internal/models"
 )
 
 // Function to fetch profile details from GitHub

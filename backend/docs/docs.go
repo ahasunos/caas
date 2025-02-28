@@ -17,7 +17,7 @@ const docTemplate = `{
     "paths": {
         "/": {
             "get": {
-                "description": "Returns a welcome message for InSpec as a Service",
+                "description": "Returns a welcome message for Compliance as a Service",
                 "produces": [
                     "application/json"
                 ],
