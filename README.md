@@ -1,6 +1,5 @@
-# InSpec Cloud
-
-InSpec Cloud — Not built for production, never meant to be (but hey, maybe someone will build a real one someday!).
+# Compliance as a Service
+Compliance as a Service — Not built for production, never meant to be (but hey, maybe someone will build a real one someday!).
 
 This project was built as an experiment over the weekend — an attempt to make a package-based application behave like a service. The results? Well… it works, just not particularly well.
 
