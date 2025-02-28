@@ -38,7 +38,7 @@ Follow these steps to set up and run the API using Docker Compose on your machin
 
 ```sh
 git clone https://github.com/ahasunos/inspec-cloud.git
-cd inspec-cloud/
+cd caas/
 ```
 
 ### 2. Start the API
